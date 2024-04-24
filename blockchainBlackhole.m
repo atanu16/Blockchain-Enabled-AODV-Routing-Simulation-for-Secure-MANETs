@@ -7,6 +7,22 @@ commRange = 100;
 % Create random node positions within a square region
 nodePositions = rand(numNodes, 2) * 1000;
 
+% Compute Delaunay triangulation
+DT = delaunayTriangulation(nodePositions);
+
+% Extract row and column indices from the Delaunay triangulation connectivity list
+[row, col] = find(tril(ones(size(DT.ConnectivityList, 1), size(DT.ConnectivityList, 2)), -1));
+
+% Create a sparse adjacency matrix
+adjacencyMatrix = sparse([DT.ConnectivityList(row,:); DT.ConnectivityList(col,:)], ...
+                         [DT.ConnectivityList(col,:); DT.ConnectivityList(row,:)], ...
+                         1, numNodes, numNodes);
+
+% Ensure symmetric connectivity
+adjacencyMatrix = double(adjacencyMatrix | adjacencyMatrix');
+
+
+
 % Initialize blockchain for each node
 blockchainCell = cell(1, numNodes);
 for i = 1:numNodes
@@ -39,7 +55,7 @@ sourceNode = 1;
 destinationNode = numNodes;
 
 % Without blackhole
-routeWithoutBlackhole = aodv(sourceNode, destinationNode, adjacencyMatrix, blockchainCell{sourceNode});
+[routeWithoutBlackhole, blockchainCell{sourceNode}] = aodv(sourceNode, destinationNode, adjacencyMatrix, blockchainCell{sourceNode});
 disp('Route without blackhole:');
 disp(routeWithoutBlackhole);
 
