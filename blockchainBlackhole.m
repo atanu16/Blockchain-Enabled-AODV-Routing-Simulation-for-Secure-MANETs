@@ -82,4 +82,4 @@ highlight(p, blackholeNode, 'NodeColor', 'g', 'MarkerSize', 10);
 highlight(p, routeWithoutBlackhole, 'EdgeColor', 'b', 'LineWidth', 2);
 highlight(p, routeWithBlackhole, 'EdgeColor', 'r', 'LineWidth', 2);
 legend('Nodes', 'Source/Destination', 'Blackhole', 'Route without blackhole', 'Route with blackhole');
-title('Visualization of Blackhole Attack');
+title('Visualization of AODV connection');
